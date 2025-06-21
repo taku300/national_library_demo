@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>日本文化作品検索</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+
+    header {
+      background: #333;
+      color: white;
+      padding: 1rem;
+      text-align: center;
+    }
+
+    main {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .left, .right {
+      padding: 1rem;
+      overflow-y: auto;
+    }
+
+    .left {
+      width: 50%;
+      background-color: #f9f9f9;
+      border-right: 1px solid #ddd;
+    }
+
+    .right {
+      width: 50%;
+      background-color: #fff;
+    }
+
+    .search-form {
+      margin-bottom: 1rem;
+    }
+
+    .result-item {
+      margin-bottom: 1rem;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 0.5rem;
+    }
+
+    .result-item img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .stream-output {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+  <header>
+    <h1>日本文化作品検索</h1>
+  </header>
+
+  <main>
+    <div class="left">
+      <form class="search-form" method="post" action="/search">
+        <input type="text" name="author" placeholder="作者名を入力" value="{{ author or '' }}" required>
+        <button type="submit">検索</button>
+      </form>
+
+      {% if results %}
+        <h2>検索結果</h2>
+        {% for r in results %}
+          <div class="result-item">
+            <strong>{{ r.title }}</strong><br>
+            作者: {{ r.creator }}<br>
+            日付: {{ r.date }}<br>
+            {% if r.image %}
+              <img src="{{ r.image }}" alt="image">
+            {% endif %}
+            <br><a href="{{ r.link }}" target="_blank">リンク</a>
+          </div>
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="right">
+      <h2>AIによる解説</h2>
+      <div id="output" class="stream-output">検索後に自動で生成されます...</div>
+    </div>
+  </main>
+
+  <script>
+    {% if results %}
+    const outputEl = document.getElementById("output");
+    let fullText = "";
+    const es = new EventSource("/stream");
+
+    es.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      if (data.text) {
+        fullText += data.text;
+        outputEl.innerHTML = marked.parse(fullText);
+      }
+    };
+
+    es.onerror = function(e) {
+      console.error("Stream error", e);
+      es.close();
+    };
+    {% endif %}
+  </script>
+</body>
+</html>
