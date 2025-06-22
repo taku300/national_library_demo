@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>日本文化作品検索</title>
+  <title>Assisted Search Mode</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
 
@@ -585,6 +585,131 @@
     ::-webkit-scrollbar-thumb:hover {
       background: #999;
     }
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+      height: auto;
+      overflow-y: auto;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+    }
+
+    /* ヘッダー */
+    header {
+      background: white;
+      border-bottom: 3px solid #e74c3c;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-button {
+      background: #e74c3c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-button:hover {
+      background: #c0392b;
+    }
+
+    main {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      min-height: calc(100vh - 80px);
+    }
+
+    .content-area {
+      padding: 2rem;
+      border-right: 1px solid #e9ecef;
+    }
+
+    .sidebar {
+      padding: 2rem;
+      background: #f8f9fa;
+    }
+
+    .results-section {
+      background: white;
+      position: relative;
+      max-height: 60vh;
+      overflow-y: auto;
+      padding-right: 0.5rem;
+    }
+
+    .results-section::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .results-section::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    .results-section::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    .results-section::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
@@ -594,11 +719,11 @@
       <div class="header-content">
         <div class="header-left">
           <div class="logo-icon">文</div>
-          <div class="site-title">日本文化作品検索</div>
+          <div class="site-title">Assisted Search Mode</div>
         </div>
         <div class="nav-buttons">
           <a href="/" class="nav-button">🏠 トップ</a>
-          <a href="/chat" class="nav-button">💬 Generative モード</a>
+          <a href="/chat" class="nav-button">💬 Generative Mode</a>
         </div>
       </div>
     </header>
