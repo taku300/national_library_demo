@@ -161,6 +161,7 @@ async def guess_author_and_search_chain(request: Request):
     for h in history:
         print(f"{h['role']}: {h['content']}")
 
+    # 🎯 会話生成のためのメッセージ（system含む）
     messages = [
         {"role": "system", "content": """# 指示
 あなたは文学作品や著書に関するユーザーに役に立つ情報を伝えるアシスタントです。
@@ -186,6 +187,7 @@ async def guess_author_and_search_chain(request: Request):
     })
 
     try:
+        # 💬 ChatGPT によるユーザー向け応答生成
         response = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=messages,
@@ -193,11 +195,16 @@ async def guess_author_and_search_chain(request: Request):
         )
         message = response.choices[0].message.content.strip()
 
+        # ✅ 著者抽出対象：user/assistant のみ、逆順
         plain_dialogue = [m for m in history if m["role"] in ("user", "assistant")]
-        reversed_dialogue = "\n".join([f"{m['role']}: {m['content']}" for m in reversed(plain_dialogue)])
+        reversed_dialogue = "\n".join([
+            f"{m['role']}: {m['content']}" for m in reversed(plain_dialogue)
+        ])
+
         print("\n🔁 抽出対象の本編対話履歴（逆順）:")
         print(reversed_dialogue)
 
+        # 🎯 著者名抽出プロンプト
         author_extraction = openai_client.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -220,6 +227,7 @@ async def guess_author_and_search_chain(request: Request):
                 "results": []
             })
 
+        # 🔎 ジャパンサーチAPIによる検索（仮関数）
         results = search_japan_search_by_author(author_name)
         print(f"📚 検索結果数: {len(results)} 件")
 
