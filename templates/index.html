@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>日本文化作品検索</title>
+  <title>Generative Japan Search アプリ</title>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
 
@@ -17,6 +17,7 @@
       background-color: #f8f9fa;
       color: #333;
       line-height: 1.6;
+      min-height: 100vh;
     }
 
     .container {
@@ -24,23 +25,136 @@
       margin: 0 auto;
       background: white;
       min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
     }
 
     /* ヘッダー */
     header {
       background: white;
       border-bottom: 3px solid #e74c3c;
-      padding: 1rem 2rem;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      padding: 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      text-align: center;
     }
 
     .header-content {
       display: flex;
+      flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem;
+    }
+
+    .header-text {
+      text-align: left;
     }
 
     .logo-icon {
+      width: 50px;
+      height: 50px;
+      background: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5rem;
+      border-radius: 4px;
+    }
+
+    .site-title {
+      font-size: 2rem;
+      font-weight: 500;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    .site-subtitle {
+      font-size: 1rem;
+      color: #666;
+      font-weight: 400;
+      margin-top: 0.5rem;
+      letter-spacing: 0.5px;
+    }
+
+    /* メインコンテンツ */
+    main {
+      padding: 3rem 2rem;
+    }
+
+    .welcome-section {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .welcome-description {
+      font-size: 1rem;
+      color: #555;
+      max-width: 800px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* モードセクション */
+    .modes-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+      align-items: stretch;
+    }
+
+    .mode-card {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 2rem;
+      transition: all 0.2s ease;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-height: 400px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .mode-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: #e74c3c;
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .mode-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: #e74c3c;
+    }
+
+    .mode-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .mode-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-icon {
       width: 40px;
       height: 40px;
       background: #e74c3c;
@@ -48,95 +162,45 @@
       align-items: center;
       justify-content: center;
       color: white;
-      font-weight: bold;
       font-size: 1.2rem;
+      border-radius: 4px;
     }
 
-    .site-title {
-      font-size: 1.5rem;
-      font-weight: 500;
-      color: #333;
-      letter-spacing: 0.5px;
-    }
-
-    /* メインコンテンツ */
-    main {
-      display: grid;
-      grid-template-columns: 2fr 1fr;
-      min-height: calc(100vh - 80px);
-    }
-
-    .content-area {
-      padding: 2rem;
-      border-right: 1px solid #e9ecef;
-    }
-
-    .sidebar {
-      padding: 2rem;
-      background: #f8f9fa;
-    }
-
-    /* 検索フォーム */
-    .search-section {
-      background: white;
-      border: 2px solid #e9ecef;
-      border-radius: 8px;
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    .search-title {
+    .mode-title {
       font-size: 1.3rem;
       font-weight: 500;
       color: #333;
-      margin-bottom: 1.5rem;
+    }
+
+    .mode-description {
+      font-size: 1rem;
+      color: #666;
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    .mode-features {
+      list-style: none;
+      margin-bottom: 2rem;
+      flex-grow: 1;
+    }
+
+    .mode-features li {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-    }
-
-    .search-title::before {
-      content: '';
-      width: 4px;
-      height: 20px;
-      background: #e74c3c;
-    }
-
-    .search-form {
-      display: flex;
-      gap: 1rem;
-      align-items: flex-end;
-    }
-
-    .form-group {
-      flex: 1;
-    }
-
-    .form-label {
-      display: block;
       margin-bottom: 0.5rem;
-      font-weight: 500;
-      color: #555;
       font-size: 0.9rem;
+      color: #555;
     }
 
-    .form-input {
-      width: 100%;
-      padding: 0.8rem 1rem;
-      border: 2px solid #dee2e6;
-      border-radius: 4px;
-      font-size: 1rem;
-      transition: border-color 0.2s ease;
-      font-family: inherit;
+    .mode-features li::before {
+      content: '✓';
+      color: #e74c3c;
+      font-weight: bold;
     }
 
-    .form-input:focus {
-      outline: none;
-      border-color: #e74c3c;
-      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-    }
-
-    .search-button {
+    .mode-button {
       background: #e74c3c;
       color: white;
       border: none;
@@ -145,281 +209,127 @@
       font-size: 1rem;
       font-weight: 500;
       cursor: pointer;
-      transition: background-color 0.2s ease;
-      white-space: nowrap;
+      transition: all 0.2s ease;
+      width: 100%;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+      margin-top: auto;
     }
 
-    .search-button:hover {
+    .mode-button:hover {
       background: #c0392b;
     }
 
-    /* 検索結果 */
-    .results-section {
-      background: white;
-    }
-
-    .results-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 2px solid #e9ecef;
-    }
-
-    .results-title {
-      font-size: 1.3rem;
-      font-weight: 500;
-      color: #333;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .results-title::before {
-      content: '';
-      width: 4px;
-      height: 20px;
-      background: #e74c3c;
-    }
-
-    .results-count {
-      background: #e74c3c;
-      color: white;
-      padding: 0.2rem 0.8rem;
-      border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 500;
-    }
-
-    .results-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .result-card {
-      background: white;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    }
-
-    .result-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      border-color: #e74c3c;
-    }
-
-    .result-image {
-      width: 100%;
-      height: 160px;
-      object-fit: cover;
+    /* フッター */
+    footer {
       background: #f8f9fa;
-    }
-
-    .result-content {
-      padding: 1.2rem;
-    }
-
-    .result-title {
-      font-size: 1.1rem;
-      font-weight: 500;
-      color: #333;
-      margin-bottom: 0.8rem;
-      line-height: 1.4;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-    }
-
-    .result-meta {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      margin-bottom: 1rem;
-      font-size: 0.9rem;
-      color: #666;
-    }
-
-    .meta-row {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .meta-label {
-      background: #f8f9fa;
-      padding: 0.1rem 0.5rem;
-      border-radius: 3px;
-      font-size: 0.8rem;
-      color: #666;
-      min-width: 40px;
-      text-align: center;
-    }
-
-    .result-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
-      color: #e74c3c;
-      text-decoration: none;
-      font-size: 0.9rem;
-      font-weight: 500;
-      transition: color 0.2s ease;
-    }
-
-    .result-link:hover {
-      color: #c0392b;
-      text-decoration: underline;
-    }
-
-    .result-link::after {
-      content: '→';
-      transition: transform 0.2s ease;
-    }
-
-    .result-link:hover::after {
-      transform: translateX(2px);
-    }
-
-    /* サイドバー */
-    .sidebar-section {
-      background: white;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-
-    .sidebar-header {
-      background: #f8f9fa;
-      padding: 1rem;
-      border-bottom: 1px solid #e9ecef;
-      font-weight: 500;
-      color: #555;
-      font-size: 0.95rem;
-    }
-
-    .sidebar-content {
-      padding: 1rem;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-
-    .ai-output {
-      font-size: 0.9rem;
-      line-height: 1.6;
-      color: #555;
-    }
-
-    .ai-output h1, .ai-output h2, .ai-output h3 {
-      color: #333;
-      margin: 1rem 0 0.5rem 0;
-      font-size: 1rem;
-    }
-
-    .ai-output p {
-      margin-bottom: 0.8rem;
-    }
-
-    .ai-output ul, .ai-output ol {
-      margin: 0.5rem 0 0.8rem 1.2rem;
-    }
-
-    .loading-indicator {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: #666;
-      font-style: italic;
-      font-size: 0.9rem;
-    }
-
-    .loading-spinner {
-      width: 16px;
-      height: 16px;
-      border: 2px solid #e9ecef;
-      border-top: 2px solid #e74c3c;
-      border-radius: 50%;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    .no-results {
-      text-align: center;
-      padding: 3rem 2rem;
-      color: #666;
-    }
-
-    .no-results-icon {
-      font-size: 3rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
-    }
-
-    .placeholder-content {
-      text-align: center;
+      border-top: 1px solid #e9ecef;
       padding: 2rem;
+      text-align: center;
       color: #666;
       font-size: 0.9rem;
-      line-height: 1.6;
     }
 
-    .placeholder-icon {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      opacity: 0.5;
+    .footer-content {
+      max-width: 600px;
+      margin: 0 auto;
     }
 
     /* レスポンシブデザイン */
-    @media (max-width: 1024px) {
-      main {
-        grid-template-columns: 1fr;
-      }
-
-      .sidebar {
-        border-top: 1px solid #e9ecef;
-        border-right: none;
-      }
-
-      .content-area {
-        border-right: none;
-      }
-    }
-
     @media (max-width: 768px) {
       .container {
         margin: 0;
+        box-shadow: none;
       }
 
       header {
-        padding: 1rem;
+        padding: 1.5rem 1rem;
       }
 
-      .content-area, .sidebar {
-        padding: 1rem;
-      }
-
-      .search-form {
+      .header-content {
         flex-direction: column;
-        align-items: stretch;
+        gap: 0.5rem;
       }
 
-      .results-grid {
-        grid-template-columns: 1fr;
-        gap: 1rem;
+      .logo-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
       }
 
       .site-title {
-        font-size: 1.2rem;
+        font-size: 2rem;
       }
+
+      main {
+        padding: 2rem 1rem;
+      }
+
+      .modes-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+
+      .mode-card {
+        padding: 1.5rem;
+      }
+
+      .welcome-title {
+        font-size: 1.5rem;
+      }
+
+      .welcome-title::before,
+      .welcome-title::after {
+        width: 40px;
+      }
+
+      .mode-button {
+        padding: 0.8rem 1.5rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .site-title {
+        font-size: 1.5rem;
+      }
+
+      .welcome-title {
+        font-size: 1.3rem;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .welcome-title::before,
+      .welcome-title::after {
+        width: 80px;
+        height: 2px;
+      }
+
+      .mode-header {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+
+    /* アニメーション */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .mode-card {
+      animation: fadeInUp 0.6s ease forwards;
+    }
+
+    .mode-card:nth-child(2) {
+      animation-delay: 0.2s;
     }
 
     /* スクロールバー */
@@ -440,145 +350,143 @@
       background: #999;
     }
   </style>
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <body>
   <div class="container">
     <header>
       <div class="header-content">
-        <div class="logo-icon">文</div>
-        <div class="site-title">日本文化作品検索</div>
+        <div class="header-top">
+          <div class="logo-icon">文</div>
+          <div class="header-text">
+            <div class="site-title">Generative Japan Search</div>
+          </div>
+        </div>
+        <div class="site-subtitle">AIで探索する日本の文化資源</div>
       </div>
     </header>
 
     <main>
-      <div class="content-area">
-        <div class="search-section">
-          <h2 class="search-title">作品を検索</h2>
-          <form class="search-form" method="post" action="/search">
-            <div class="form-group">
-              <label class="form-label" for="author">作者名</label>
-              <input type="text" id="author" name="author" class="form-input"
-                     placeholder="作者名を入力してください" value="{{ author or '' }}" required>
-            </div>
-            <button type="submit" class="search-button">検索</button>
-          </form>
-        </div>
-
-        <div class="results-section">
-          {% if results %}
-            <div class="results-header">
-              <h2 class="results-title">検索結果</h2>
-              <div class="results-count">{{ results|length }}件</div>
-            </div>
-            <div class="results-grid">
-              {% for r in results %}
-                <div class="result-card">
-                  {% if r.image %}
-                    <img src="{{ r.image }}" alt="{{ r.title }}" class="result-image">
-                  {% else %}
-                    <div class="result-image" style="display: flex; align-items: center; justify-content: center; background: #f8f9fa; color: #ccc; font-size: 2rem;">📄</div>
-                  {% endif %}
-                  <div class="result-content">
-                    <h3 class="result-title">{{ r.title }}</h3>
-                    <div class="result-meta">
-                      <div class="meta-row">
-                        <span class="meta-label">作者</span>
-                        <span>{{ r.creator }}</span>
-                      </div>
-                      <div class="meta-row">
-                        <span class="meta-label">年代</span>
-                        <span>{{ r.date }}</span>
-                      </div>
-                    </div>
-                    <a href="{{ r.link }}" target="_blank" class="result-link">詳細を見る</a>
-                  </div>
-                </div>
-              {% endfor %}
-            </div>
-          {% else %}
-            <div class="no-results">
-              <div class="no-results-icon">🔍</div>
-              <p>作者名を入力して検索してください</p>
-            </div>
-          {% endif %}
-        </div>
+      <div class="welcome-section">
+        <p class="welcome-description">
+          Japan Searchの豊富な文化資料をAIの力で探索できる、新しい検索体験をお楽しみください。
+          著者名での検索から、AIとの対話による発見まで、あなたに最適な方法で日本の文化遺産にアクセスできます。
+        </p>
       </div>
 
-      <div class="sidebar">
-        <div class="sidebar-section">
-          <div class="sidebar-header">参考情報</div>
-          <div class="sidebar-content">
-            <div id="output" class="ai-output">
-              {% if results %}
-                <div class="loading-indicator">
-                  <div class="loading-spinner"></div>
-                  <span>解析中...</span>
-                </div>
-              {% else %}
-                <div class="placeholder-content">
-                  <div class="placeholder-icon">💡</div>
-                  <p>検索を実行すると、作品や作者に関する参考情報をここに表示します。</p>
-                </div>
-              {% endif %}
-            </div>
+      <div class="modes-container">
+        <div class="mode-card">
+          <div class="mode-header">
+            <div class="mode-icon">🔍</div>
+            <h2 class="mode-title">Assisted Search Mode</h2>
           </div>
+          <p class="mode-description">
+            著者名でJapan Searchを検索し、AIが結果を解説して次の探索をサポートします。
+            調べたい著者がいる場合におすすめです。
+          </p>
+          <ul class="mode-features">
+            <li>著者名による検索</li>
+            <li>AI による結果解説</li>
+            <li>次の検索提案機能</li>
+            <li>多様な文化機関の資料</li>
+          </ul>
+          <a href="/search" class="mode-button">検索を始める</a>
+        </div>
+
+        <div class="mode-card">
+          <div class="mode-header">
+            <div class="mode-icon">💬</div>
+            <h2 class="mode-title">Generative Mode</h2>
+          </div>
+          <p class="mode-description">
+            AIと会話しながら日本の文化資源を探索できます。
+            興味やテーマから提案を受けたい時におすすめです。
+          </p>
+          <ul class="mode-features">
+            <li>対話型の探索体験</li>
+            <li>興味に基づく提案</li>
+            <li>発見型の検索</li>
+            <li>パーソナライズされた情報</li>
+          </ul>
+          <a href="/chat" class="mode-button">チャットを始める</a>
         </div>
       </div>
     </main>
+
+    <footer>
+      <div class="footer-content">
+        <p>日本の文化遺産をデジタルの力で次世代に継承し、新たな発見と学びの機会を提供します</p>
+      </div>
+    </footer>
   </div>
 
   <script>
-    {% if results %}
-    const outputEl = document.getElementById("output");
-    let fullText = "";
-    const es = new EventSource("/stream");
-
-    es.onmessage = function(event) {
-      const data = JSON.parse(event.data);
-      if (data.text) {
-        fullText += data.text;
-        outputEl.innerHTML = marked.parse(fullText);
-      }
-    };
-
-    es.onerror = function(e) {
-      console.error("Stream error", e);
-      es.close();
-    };
-    {% endif %}
-
-    // フォーカス時のアクセシビリティ向上
-    document.querySelectorAll('.form-input').forEach(input => {
-      input.addEventListener('focus', function() {
-        this.parentElement.style.transform = 'scale(1.01)';
+    // カードのホバーエフェクト強化
+    document.querySelectorAll('.mode-card').forEach(card => {
+      card.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-8px) scale(1.02)';
       });
 
-      input.addEventListener('blur', function() {
-        this.parentElement.style.transform = 'scale(1)';
+      card.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0) scale(1)';
       });
     });
 
-    // 検索結果カードのアニメーション
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
+    // ボタンクリック時のリップルエフェクト
+    document.querySelectorAll('.mode-button').forEach(button => {
+      button.addEventListener('click', function(e) {
+        const ripple = document.createElement('span');
+        const rect = this.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height);
+        const x = e.clientX - rect.left - size / 2;
+        const y = e.clientY - rect.top - size / 2;
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
+        ripple.style.cssText = `
+          position: absolute;
+          width: ${size}px;
+          height: ${size}px;
+          left: ${x}px;
+          top: ${y}px;
+          background: rgba(255, 255, 255, 0.3);
+          border-radius: 50%;
+          transform: scale(0);
+          animation: ripple 0.6s ease-out;
+          pointer-events: none;
+        `;
+
+        this.style.position = 'relative';
+        this.style.overflow = 'hidden';
+        this.appendChild(ripple);
+
+        setTimeout(() => {
+          ripple.remove();
+        }, 600);
+      });
+    });
+
+    // CSS for ripple animation
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes ripple {
+        to {
+          transform: scale(4);
+          opacity: 0;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+
+    // スムーズスクロール
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
         }
       });
-    }, observerOptions);
-
-    document.querySelectorAll('.result-card').forEach((card, index) => {
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(20px)';
-      card.style.transition = `opacity 0.6s ease ${index * 0.1}s, transform 0.6s ease ${index * 0.1}s`;
-      observer.observe(card);
     });
   </script>
 </body>

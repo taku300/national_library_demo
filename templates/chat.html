@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>対話で探す日本文化作品</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      min-height: 100vh;
+      box-shadow: 0 0 20px rgba(0,0,0,0.08);
+    }
+
+    /* ヘッダー */
+    header {
+      background: white;
+      border-bottom: 3px solid #e74c3c;
+      padding: 1rem 2rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      background: #e74c3c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 1.2rem;
+      border-radius: 4px;
+    }
+
+    .site-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #333;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .nav-button {
+      background: #e74c3c;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .nav-button:hover {
+      background: #c0392b;
+    }
+
+    .nav-button.active {
+      background: #c0392b;
+    }
+
+    /* メインコンテンツ */
+    main {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: calc(100vh - 80px);
+    }
+
+    /* 左側: チャットエリア */
+    .chat-area {
+      padding: 2rem;
+      border-right: 1px solid #e9ecef;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chat-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .chat-title {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .chat-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: #e74c3c;
+    }
+
+    .chat-subtitle {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .author-display {
+      background: #f8f9fa;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .author-label {
+      font-size: 0.8rem;
+      color: #666;
+      margin-bottom: 0.3rem;
+      font-weight: 500;
+    }
+
+    .author-name {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #e74c3c;
+    }
+
+    .chat-box {
+      flex: 1;
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      overflow-y: auto;
+      max-height: 400px;
+      min-height: 300px;
+    }
+
+    .message {
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+    }
+
+    .message.user {
+      flex-direction: row-reverse;
+    }
+
+    .message-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      font-weight: bold;
+      flex-shrink: 0;
+    }
+
+    .message.user .message-avatar {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .message.bot .message-avatar {
+      background: #6c757d;
+      color: white;
+    }
+
+    .message-bubble {
+      max-width: 70%;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .message.user .message-bubble {
+      background: #e74c3c;
+      color: white;
+      border-bottom-right-radius: 4px;
+    }
+
+    .message.bot .message-bubble {
+      background: #f8f9fa;
+      color: #333;
+      border: 1px solid #e9ecef;
+      border-bottom-left-radius: 4px;
+    }
+
+    .chat-input-container {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: auto;
+    }
+
+    .chat-input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border: 2px solid #dee2e6;
+      border-radius: 4px;
+      font-size: 1rem;
+      transition: border-color 0.2s ease;
+      font-family: inherit;
+    }
+
+    .chat-input:focus {
+      outline: none;
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
+    }
+
+    .send-button {
+      background: #e74c3c;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .send-button:hover {
+      background: #c0392b;
+    }
+
+    .send-button:disabled {
+      background: #6c757d;
+      cursor: not-allowed;
+    }
+
+    /* 右側: 結果エリア */
+    .results-area {
+      padding: 2rem;
+      background: #f8f9fa;
+      overflow-y: auto;
+    }
+
+    .results-header {
+      margin-bottom: 1.5rem;
+    }
+
+    .results-title {
+      font-size: 1.3rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .results-title::before {
+      content: '';
+      width: 4px;
+      height: 20px;
+      background: #e74c3c;
+    }
+
+    .results-count {
+      background: #e74c3c;
+      color: white;
+      padding: 0.2rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      display: inline-block;
+      margin-top: 0.5rem;
+    }
+
+    .results-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .result-card {
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .result-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      border-color: #e74c3c;
+    }
+
+    .result-title {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .result-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      margin-bottom: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .meta-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .meta-label {
+      background: #f8f9fa;
+      padding: 0.1rem 0.5rem;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      color: #666;
+      min-width: 40px;
+      text-align: center;
+    }
+
+    .result-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #e74c3c;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: color 0.2s ease;
+    }
+
+    .result-link:hover {
+      color: #c0392b;
+      text-decoration: underline;
+    }
+
+    .result-link::after {
+      content: '→';
+      transition: transform 0.2s ease;
+    }
+
+    .result-link:hover::after {
+      transform: translateX(2px);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 2rem;
+      color: #666;
+    }
+
+    .empty-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      opacity: 0.5;
+    }
+
+    /* レスポンシブデザイン */
+    @media (max-width: 1024px) {
+      main {
+        grid-template-columns: 1fr;
+      }
+
+      .results-area {
+        border-top: 1px solid #e9ecef;
+        border-right: none;
+      }
+
+      .chat-area {
+        border-right: none;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        margin: 0;
+        box-shadow: none;
+      }
+
+      header {
+        padding: 1rem;
+      }
+
+      .header-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+
+      .nav-buttons {
+        width: 100%;
+        justify-content: flex-start;
+      }
+
+      .chat-area, .results-area {
+        padding: 1rem;
+      }
+
+      .chat-input-container {
+        flex-direction: column;
+      }
+
+      .send-button {
+        align-self: flex-end;
+        width: auto;
+      }
+
+      .site-title {
+        font-size: 1.2rem;
+      }
+    }
+
+    /* スクロールバー */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f1f1;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #ccc;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="header-content">
+        <div class="header-left">
+          <div class="logo-icon">文</div>
+          <div class="site-title">日本文化作品検索</div>
+        </div>
+        <div class="nav-buttons">
+          <a href="/" class="nav-button">🏠 トップ</a>
+          <a href="/chat" class="nav-button active">💬 Generative モード</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <!-- 左側: チャットエリア -->
+      <div class="chat-area">
+        <div class="chat-header">
+          <h2 class="chat-title">対話で探索</h2>
+          <p class="chat-subtitle">お探しの作家や作品について教えてください</p>
+        </div>
+
+        <div class="author-display">
+          <div class="author-label">🖋️ 推定された著者</div>
+          <div class="author-name" id="author-name">（未推定）</div>
+        </div>
+
+        <div class="chat-box" id="chat-box">
+          <div class="message bot">
+            <div class="message-avatar">AI</div>
+            <div class="message-bubble">こんにちは！お探しの作家や作品について教えてください。</div>
+          </div>
+        </div>
+
+        <div class="chat-input-container">
+          <input type="text" id="user-input" class="chat-input" placeholder="メッセージを入力..." />
+          <button onclick="sendMessage()" class="send-button" id="send-button">送信</button>
+        </div>
+      </div>
+
+      <!-- 右側: 結果エリア -->
+      <div class="results-area">
+        <div class="results-header">
+          <h2 class="results-title">検索結果</h2>
+          <div class="results-count" id="results-count" style="display: none;">0件</div>
+        </div>
+
+        <div class="results-grid" id="results-section">
+          <div class="empty-state">
+            <div class="empty-icon">💭</div>
+            <p>対話を通じて文化資料を発見しましょう</p>
+            <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">左側のチャットで作家や作品について話してください</p>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const resultsSection = document.getElementById('results-section');
+    const resultsCount = document.getElementById('results-count');
+    const authorName = document.getElementById('author-name');
+    const userInput = document.getElementById('user-input');
+    const sendButton = document.getElementById('send-button');
+    const history = [];
+
+    function addMessage(role, content) {
+      const message = document.createElement('div');
+      message.classList.add('message', role);
+
+      const avatar = document.createElement('div');
+      avatar.classList.add('message-avatar');
+      avatar.textContent = role === 'user' ? 'You' : 'AI';
+
+      const bubble = document.createElement('div');
+      bubble.classList.add('message-bubble');
+      bubble.textContent = content;
+
+      message.appendChild(avatar);
+      message.appendChild(bubble);
+      chatBox.appendChild(message);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function renderResults(results) {
+      resultsSection.innerHTML = '';
+      results.forEach(r => {
+        const card = document.createElement('div');
+        card.classList.add('result-card');
+
+        card.innerHTML = `
+          <h3 class="result-title">${r.title}</h3>
+          <div class="result-meta">
+            <div class="meta-row">
+              <span class="meta-label">作者</span>
+              <span>${r.creator}</span>
+            </div>
+            <div class="meta-row">
+              <span class="meta-label">年代</span>
+              <span>${r.date || '不明'}</span>
+            </div>
+          </div>
+          <a href="${r.link}" target="_blank" class="result-link">詳細を見る</a>
+        `;
+
+        resultsSection.appendChild(card);
+      });
+    }
+
+    function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      // UIの更新
+      addMessage('user', text);
+      history.push({ role: "user", content: text });
+      userInput.value = '';
+      sendButton.disabled = true;
+      sendButton.textContent = '送信中...';
+
+      // APIリクエスト
+      fetch("/guess-author", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ history })
+      })
+      .then(res => res.json())
+      .then(data => {
+        const reply = data.message || "応答がありません。";
+        addMessage('bot', reply);
+        history.push({ role: "assistant", content: reply });
+
+        // 推定著者の表示
+        if (data.author && data.author !== "不明") {
+          authorName.textContent = data.author;
+        } else {
+          authorName.textContent = "（未推定）";
+        }
+
+        if (data.results && data.results.length > 0) {
+          renderResults(data.results);
+        }
+      })
+      .catch(err => {
+        console.error("エラー:", err);
+        addMessage('bot', "通信エラーが発生しました。もう一度お試しください。");
+      })
+      .finally(() => {
+        sendButton.disabled = false;
+        sendButton.textContent = '送信';
+      });
+    }
+
+    // エンターキーで送信
+    userInput.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter' && !sendButton.disabled) {
+        sendMessage();
+      }
+    });
+
+    // 入力フィールドにフォーカス
+    userInput.focus();
+  </script>
+</body>
+</html>

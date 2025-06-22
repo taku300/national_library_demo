@@ -1,24 +1,26 @@
-# 1. プロジェクトをクローン（または任意のフォルダを作成）
+# National Library Demo セットアップ手順
+
+# 1. プロジェクトをクローン（またはフォルダを作成）
 git clone <your-repo-url> national_library_demo
 cd national_library_demo
 
-# 2. Python仮想環境を作成
-python -m venv venv
-
-# 3. 仮想環境を有効化
+# 2. Python 仮想環境を作成・有効化
+python3 -m venv venv
 source venv/bin/activate
 
-# 4. .env ファイルを作成して OpenAI APIキーを登録
-touch .env
-以下を保存する
-OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+# 3. .env ファイルを作成して OpenAI API キーを設定
+echo "OPENAI_API_KEY=sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" > .env
 
-# 5. 依存ライブラリをインストール
-# pip freeze > requirements.txt で定期的に更新可能
+# 4. 必要な依存ライブラリをインストール
 pip install -r requirements.txt
 
-# 6. アプリを起動
+# ※ 開発中に依存関係を追加したら以下で反映可能
+# pip freeze > requirements.txt
+
+# 5. アプリケーションを起動
 uvicorn app:app --reload
 
-# 7. ブラウザでアクセス
-# http://localhost:8000/
+# アクセス → http://localhost:8000/
+
+# 6. （任意）Jupyter Lab を起動したい場合
+jupyter lab

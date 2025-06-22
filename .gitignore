@@ -12,5 +12,8 @@ venv/
 # VSCode
 .vscode/
 
-# その他
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# pip
 get-pip.py
